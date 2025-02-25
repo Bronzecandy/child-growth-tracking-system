@@ -1,9 +1,23 @@
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const PrivateRoute = ({ element }) => {
-  const isAuthenticated = !!localStorage.getItem("token"); // Giả sử dùng token lưu trong localStorage
+  const { user, loading } = useContext(AuthContext);
 
-  return isAuthenticated ? element : <Navigate to="/login" replace />;
+  if (loading) {
+    return <div className="text-center text-xl font-semibold">⏳ Đang tải...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.role === 1 || user.role === 2) {
+    return element;
+  }
+
+  return <Navigate to="/" replace />;
 };
 
 export default PrivateRoute;
