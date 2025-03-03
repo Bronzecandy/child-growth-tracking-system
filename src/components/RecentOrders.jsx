@@ -20,7 +20,7 @@ const RecentOrders = () => {
           </thead>
           <tbody>
             <tr className="border-b border-gray-200 dark:border-gray-800">
-              <td className="py-3 text-gray-800 dark:text-white/90">#001</td>
+              <td className="py-3 text-gray-800 dark:text-gray-400">#001</td>
               <td className="py-3 text-gray-500 dark:text-gray-400">John Doe</td>
               <td className="py-3 text-gray-500 dark:text-gray-400">02/03/2025</td>
               <td className="py-3">
@@ -30,7 +30,7 @@ const RecentOrders = () => {
               </td>
             </tr>
             <tr className="border-b border-gray-200 dark:border-gray-800">
-              <td className="py-3 text-gray-800 dark:text-white/90">#002</td>
+              <td className="py-3 text-gray-800 dark:text-gray-400">#002</td>
               <td className="py-3 text-gray-500 dark:text-gray-400">Jane Smith</td>
               <td className="py-3 text-gray-500 dark:text-gray-400">01/03/2025</td>
               <td className="py-3">
@@ -40,7 +40,7 @@ const RecentOrders = () => {
               </td>
             </tr>
             <tr className="border-b border-gray-200 dark:border-gray-800">
-              <td className="py-3 text-gray-800 dark:text-white/90">#003</td>
+              <td className="py-3 text-gray-800 dark:text-gray-400">#003</td>
               <td className="py-3 text-gray-500 dark:text-gray-400">Alice Johnson</td>
               <td className="py-3 text-gray-500 dark:text-gray-400">28/02/2025</td>
               <td className="py-3">

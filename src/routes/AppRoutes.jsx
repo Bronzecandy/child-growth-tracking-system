@@ -13,11 +13,12 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Public Routes */}
+      <Route path="/" element={<Dashboard />} />
       <Route path="/login" element={<PublicRoute element={<Login />} />} />
       <Route path="/register" element={<PublicRoute element={<Register />} />} />
 
       {/* Private Routes */}
-      <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
+      {/* <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} /> */}
 
       {/* Free Routes (Ai cũng xem được) */}
       <Route path="/" element={<Home />} />
