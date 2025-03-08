@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
       const res = await api.post("/auth/login", { email, password });
       const { data } = await api.get("/auth/me");
       //setUser(data.user);
-      if (data.user.role === 1 || data.user.role === 2) {
+      if (data.user.role === 1) {
         navigate("/dashboard");
       } else {
         navigate("/");

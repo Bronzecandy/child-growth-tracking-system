@@ -13,7 +13,7 @@ const PrivateRoute = ({ element }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.role === 1 || user.role === 2) {
+  if (user.role === 1) {
     return element;
   }
 
