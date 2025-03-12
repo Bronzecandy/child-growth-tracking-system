@@ -9,6 +9,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
+import AboutUs from "../pages/AboutUs";
 
 const AppRoutes = () => {
   return (
@@ -23,7 +24,7 @@ const AppRoutes = () => {
       <Route path="/dashboard/user" element={<PrivateRoute element={<User />} />} />
 
       {/* Free Routes (Ai cũng xem được) */}
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<AboutUs />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
