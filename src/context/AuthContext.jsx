@@ -19,9 +19,9 @@ export const AuthProvider = ({ children }) => {
           console.log("Access token hết hạn, thử refresh token...");
           await refreshAccessToken();
         }
-        // else if (error.response?.status === 403) {
-        //   await logout();
-        // }
+        else if (error.response?.status === 403) {
+          await logout();
+        }
       } finally {
         setLoading(false);
       }
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await api.post("/auth/login", { email, password });
       const { data } = await api.get("/auth/me");
-      //setUser(data.user);
+      setUser(data.user);
       if (data.user.role === 1) {
         navigate("/dashboard");
       } else {
