@@ -26,7 +26,7 @@ const FAQ = () => {
               Bước 3: Hiệu chỉnh lượng thực phẩm cần ăn theo hệ số 3.4 Đạt được số với ngân hàng thực đơn cân bằng dinh dưỡng.
             </li>
           </ul>
-          <img 
+          <img
             src="https://storage.googleapis.com/a1aa/image/PiDdfBQO-rG8z3LGc1lpTOJ2GR9P3Uv9ABIC_ru4eEI.jpg"
             alt="A pregnant woman holding an apple"
             className="w-full h-auto mb-4 rounded-lg"
@@ -102,7 +102,6 @@ const FAQ = () => {
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Những Câu Hỏi Thường Gặp</h1>
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        {/* FAQ section */}
         {faqItems.map((item, index) => (
           <div key={index} className="border-b border-gray-100 last:border-b-0">
           <div
