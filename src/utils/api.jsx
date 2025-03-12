@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = 'http://localhost:4000/api' ; // URL API của bạn
+const API_URL = 'http://localhost:4000/api'; // URL API của bạn
 
 const api = axios.create({
   baseURL: API_URL,
@@ -15,9 +15,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const { data } = await axios.post(`${API_URL}/auth/renew-access-token`, {}, { withCredentials: true });
-        api.defaults.headers.common["Authorization"] = `Bearer ${data.accessToken}`;
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+        await axios.post(`${API_URL}/auth/renew-access-token`, {}, { withCredentials: true });
         return api(originalRequest);
       } catch (refreshError) {
         console.error("Refresh token failed:", refreshError);

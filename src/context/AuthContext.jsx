@@ -18,7 +18,10 @@ export const AuthProvider = ({ children }) => {
         if (error.response?.status === 401) {
           console.log("Access token hết hạn, thử refresh token...");
           await refreshAccessToken();
-        }
+        } 
+        else if (error.response?.status === 403) {
+           await logout();
+         }
       } finally {
         setLoading(false);
       }
@@ -35,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user);
     } catch (error) {
       console.error("Lỗi refresh token:", error);
-      logout();
+      //logout();
     }
   };
 
@@ -43,8 +46,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await api.post("/auth/login", { email, password });
       const { data } = await api.get("/auth/me");
-      //setUser(data.user);
-      if (data.user.role === 1 || data.user.role === 2) {
+      setUser(data.user);
+      if (data.user.role === 1) {
         navigate("/dashboard");
       } else {
         navigate("/");
@@ -52,6 +55,15 @@ export const AuthProvider = ({ children }) => {
       return res.data;
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
+      throw error;
+    }
+  };
+  const register = async (name, email, password) => {
+    try {
+      const res = await api.post("/auth/signup", { name, email, password });
+      return res.data;
+    } catch (error) {
+      console.error("Lỗi đăng ký:", error);
       throw error;
     }
   };
