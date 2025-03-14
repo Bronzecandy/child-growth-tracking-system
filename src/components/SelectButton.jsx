@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Select = ({ 
+const SelectButton = ({ 
   id = "countries",
   label = "Select an option",
   defaultOption = "Choose a country",
@@ -61,4 +61,4 @@ const Select = ({
   );
 };
 
-export default Select;
+export default SelectButton;

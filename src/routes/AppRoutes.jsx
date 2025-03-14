@@ -9,6 +9,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
+import MembershipDashboard from "../pages/MembershipDashboard";
 
 const AppRoutes = () => {
   return (
@@ -21,7 +22,7 @@ const AppRoutes = () => {
       <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
 
       <Route path="/dashboard/user" element={<PrivateRoute element={<User />} />} />
-
+      <Route path="/dashboard/membership-package" element={<PrivateRoute element={<MembershipDashboard />} />} />
       {/* Free Routes (Ai cũng xem được) */}
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />

@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
-import debounce from "lodash.debounce";
-import SelectButton from './SelectButton';
-import Pagination from './Pagination';
+import SelectButton from '../components/SelectButton';
+import Pagination from '../components/Pagination';
 import DefaultAvatar from '../assets/DefaultAvatar.svg';
-import Loading from './Loading';
-const UserTable = () => {
+import Loading from '../components/Loading';
+const MembershipDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [users, setUsers] = useState([]);
+    const [membershipPackages, setMembershipPackages] = useState([]);
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(10);
     const [search, setSearch] = useState("");
     const [order, setOrder] = useState("");
     const [sortBy, setSortBy] = useState("");
     const [totalPages, setTotalPages] = useState(1);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
-    const fetchUsers = async () => {
+    const fetchMembershipPackages = async () => {
         setLoading(true);
         try {
-            const response = await api.get("/users", {
+            const response = await api.get("/membership-packages", {
                 params: { page, size, search, sortBy, order },
             });
-            setUsers(response.data.users);
+            setMembershipPackages(response.data.packages);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error("Lỗi khi lấy danh sách users:", error);
@@ -33,7 +31,7 @@ const UserTable = () => {
 
     useEffect(() => {
         const delay = setTimeout(() => {
-            fetchUsers();
+            fetchMembershipPackages();
         }, 500);
 
         return () => clearTimeout(delay);
@@ -122,8 +120,9 @@ const UserTable = () => {
 
                             <th scope="col" className="px-6 py-3">ID</th>
                             <th scope="col" className="px-6 py-3">Name</th>
-                            <th scope="col" className="px-6 py-3">Position</th>
-                            <th scope="col" className="px-6 py-3">Phone Number</th>
+                            <th scope="col" className="px-6 py-3">Duration</th>
+                            <th scope="col" className="px-6 py-3">Price</th>
+                            <th scope="col" className="px-6 py-3">Is Active</th>
                             <th scope="col" className="px-6 py-3">Action</th>
                         </tr>
                     </thead>
@@ -135,46 +134,47 @@ const UserTable = () => {
                                 </td>
                             </tr>
                         ) : (
-                            users.map((user) => (
+                            membershipPackages.map((membershipPackage) => (
                                 <tr
-                                    key={user._id}
+                                    key={membershipPackage._id}
                                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
                                 >
-                                    <td className="px-6 py-4">{user._id}</td>
-                                    <th
-                                        scope="row"
-                                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                                    >
-                                        <img
-                                            className="w-10 h-10 rounded-full"
-                                            src={user.avatar ? user.avatar : DefaultAvatar}
-                                            alt={`${user.email} Avatar`}
-                                        />
-                                        <div className="ps-3">
-                                            <div className="text-base font-semibold">{user.name}</div>
-                                            <div className="font-normal text-gray-500">{user.email}</div>
-                                        </div>
-                                    </th>
-                                    <td className="px-6 py-4">{user.role === 0 ? "User" : "Doctor"}</td>
+                                    <td className="px-6 py-4">{membershipPackage._id}</td>
                                     <td className="px-6 py-4">
-                                        <div className="flex items-center">
-                                            <div className={`h-2.5 w-2.5 rounded-full me-2`}></div>
-                                            {user.phoneNumber}
+                                        <div className="ps-3">
+                                            <div className="text-base font-semibold">{membershipPackage.name}</div>
                                         </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {membershipPackage.duration.value} {membershipPackage.duration.unit}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {membershipPackage.price.value} {membershipPackage.price.unit}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {membershipPackage.isDeleted ? (
+                                            <div className="flex items-center">
+                                                <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2" /> Deactive
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center">
+                                                <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2" /> Active
+                                            </div>
+                                        )}
+
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={openModal}
                                             className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                                         >
-                                            Edit user
+                                            Edit Package
                                         </button>
                                     </td>
                                 </tr>
                             ))
                         )}
                     </tbody>
-
                 </table>
             </div>
             <Pagination
@@ -309,4 +309,4 @@ const UserTable = () => {
     );
 };
 
-export default UserTable;
+export default MembershipDashboard;
