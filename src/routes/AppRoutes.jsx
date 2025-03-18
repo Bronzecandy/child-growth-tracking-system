@@ -11,6 +11,8 @@ import Dashboard from "../pages/Dashboard";
 import NotFound from "../pages/NotFound";
 import MembershipDashboard from "../pages/MembershipDashboard";
 import PostDashboard from "../pages/PostDashboard";
+import RequestDashboard from "../pages/RequestDashboard";
+import ConsultationsDashboard from "../pages/ConsultationsDashboard";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -24,6 +26,8 @@ const AppRoutes = () => {
       <Route path="/dashboard/users" element={<PrivateRoute element={<User />} />} />
       <Route path="/dashboard/membership-packages" element={<PrivateRoute element={<MembershipDashboard />} />} />
       <Route path="/dashboard/posts" element={<PrivateRoute element={<PostDashboard />} />} />
+      <Route path="/dashboard/requests" element={<PrivateRoute element={<RequestDashboard />} />} />
+      <Route path="/dashboard/consultations" element={<PrivateRoute element={<ConsultationsDashboard />} />} />
       {/* Free Routes (Ai cũng xem được) */}
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />

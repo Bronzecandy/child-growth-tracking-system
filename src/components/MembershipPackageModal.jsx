@@ -7,7 +7,7 @@ const schema = yup.object().shape({
     description: yup.string().required("Description is required"),
     price: yup.number().typeError("Price must be a number").required("Price is required").positive("Price must be positive"),
     duration: yup.number().typeError("Duration must be a number").required("Duration is required").positive("Duration must be positive"),
-    postLimit: yup.number().typeError("Post Limit must be a number").required("Post Limit is required").min(1, "Must be at least 1"),
+    postLimit: yup.number().typeError("Post Limit must be a number").required("Post Limit is required").min(0, "Post Limit must be positive"),
     updateChildDataLimit: yup.number().typeError("Child Limit must be a number").required("Child Limit is required").min(0, "Must be at least 0"),
 });
 
