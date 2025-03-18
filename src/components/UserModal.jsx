@@ -15,7 +15,6 @@ const schema = yup.object({
 }).required();
 
 const UserModal = ({ isModalOpen, closeModal, onSubmit, initialData = {} }) => {
-    console.log(initialData.role)
     const {
         register,
         handleSubmit,

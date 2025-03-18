@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import SelectButton from '../components/SelectButton';
 import Pagination from '../components/Pagination';
-import DefaultAvatar from '../assets/DefaultAvatar.svg';
+import ConfirmDelete from '../components/ConfirmDelete';
+import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
+import MembershipPackageModal from '../components/MembershipPackageModal';
 const MembershipDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [currentPackageID, setCurrentPackageID] = useState('');
     const [membershipPackages, setMembershipPackages] = useState([]);
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(10);
@@ -25,8 +29,9 @@ const MembershipDashboard = () => {
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error("Lỗi khi lấy danh sách users:", error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     useEffect(() => {
@@ -41,6 +46,10 @@ const MembershipDashboard = () => {
         setSearch(e.target.value);
     };
 
+    const handleOpenDeleteModal = (value) => {
+        setIsDeleteModalOpen(true);
+        setCurrentPackageID(value)
+    };
 
     // Function to open modal
     const openModal = () => {
@@ -52,11 +61,30 @@ const MembershipDashboard = () => {
         setIsModalOpen(false);
     };
     // Function to handle form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission logic here
-        closeModal();
+    const handleCreateMembershipPackage = async (formData) => {
+        try {
+            await api.post("/membership-packages", formData);
+            toast.success("Package created successfully");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
+        } finally {
+            fetchMembershipPackages();
+        }
     };
+
+    const handleDelete = async () => {
+        try {
+            const response = await api.delete(`/membership-packages/${currentPackageID}`);
+            toast.success(response.data.message);
+
+        } catch (error) {
+            toast.error(error.response.data.message);
+        } finally {
+            fetchMembershipPackages();
+            setIsDeleteModalOpen(false);
+        }
+    };
+
     const handlePageChange = (page) => {
         setPage(page);
     }
@@ -71,6 +99,26 @@ const MembershipDashboard = () => {
             {/* Table header with actions and search */}
             <div className="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
                 <div className='flex gap-5'>
+                    <button
+                        type="button"
+                        onClick={openModal}
+                        className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white rounded-lg md:w-auto bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    >
+                        <svg
+                            className="h-5 w-5 mr-2 -ml-1"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                        >
+                            <path
+                                clipRule="evenodd"
+                                fillRule="evenodd"
+                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                            />
+                        </svg>
+                        Add Package
+                    </button>
                     <SelectButton
                         id="languages"
                         label="Sort by"
@@ -91,7 +139,6 @@ const MembershipDashboard = () => {
                         ]}
                         onChange={handleOrderByChange}
                     />
-
                 </div>
 
                 <div className="relative">
@@ -118,7 +165,9 @@ const MembershipDashboard = () => {
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" className="px-6 py-3">Name</th>
-                            <th scope="col" className="px-6 py-3">Tier</th>
+                            <th scope="col" className="px-6 py-3">Post Limit</th>
+                            <th scope="col" className="px-6 py-3">Chart Limit</th>
+                            <th scope="col" className="px-6 py-3">Child Limit</th>
                             <th scope="col" className="px-6 py-3">Duration</th>
                             <th scope="col" className="px-6 py-3">Price</th>
                             <th scope="col" className="px-6 py-3">Is Active</th>
@@ -128,7 +177,7 @@ const MembershipDashboard = () => {
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan="5" className="text-center py-4">
+                                <td colSpan="8" className="text-center py-4">
                                     <Loading />
                                 </td>
                             </tr>
@@ -138,13 +187,15 @@ const MembershipDashboard = () => {
                                     key={membershipPackage._id}
                                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
                                 >
-                                    
+
                                     <td className="px-6 py-4">
                                         <div className="ps-3">
                                             <div className="text-base font-semibold">{membershipPackage.name}</div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">{membershipPackage.tier}</td>
+                                    <td className="px-6 py-4">{membershipPackage.postLimit}</td>
+                                    <td className="px-6 py-4">{membershipPackage.downloadChart}</td>
+                                    <td className="px-6 py-4">{membershipPackage.updateChildDataLimit}</td>
                                     <td className="px-6 py-4">
                                         {membershipPackage.duration.value} {membershipPackage.duration.unit}
                                     </td>
@@ -165,12 +216,15 @@ const MembershipDashboard = () => {
                                     </td>
                                     <td className="px-6 py-4">
                                         <button
-                                            onClick={openModal}
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                            className="font-medium"
+                                            onClick={() => handleOpenDeleteModal(membershipPackage._id)}
                                         >
-                                            Edit Package
+                                            <svg className="w-6 h-6 text-red-500 dark:text-red-500 hover:text-red-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clipRule="evenodd" />
+                                            </svg>
                                         </button>
                                     </td>
+
                                 </tr>
                             ))
                         )}
@@ -182,129 +236,14 @@ const MembershipDashboard = () => {
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
             />
-
-            {/* Edit User Modal */}
-            {isModalOpen && (
-                <div className="fixed bg-neutral-800/50 top-0 left-0 right-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                    <div className="relative w-full max-w-2xl max-h-full">
-                        {/* Modal content */}
-                        <form onSubmit={handleSubmit} className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-                            {/* Modal header */}
-                            <div className="flex  items-start justify-between p-4 border-b rounded-t dark:border-gray-600 border-gray-200">
-                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                    Edit user
-                                </h3>
-                                <button
-                                    type="button"
-                                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                    onClick={closeModal}
-                                >
-                                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                    </svg>
-                                    <span className="sr-only">Close modal</span>
-                                </button>
-                            </div>
-
-                            {/* Modal body */}
-                            <div className="p-6 space-y-6">
-                                <div className="grid grid-cols-6 gap-6">
-                                    <div className="col-span-6 sm:col-span-3">
-                                        <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            id="name"
-                                            className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="Green"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-span-6 sm:col-span-3">
-                                        <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            id="email"
-                                            className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="example@company.com"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-span-6 sm:col-span-3">
-                                        <label htmlFor="phone-number" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                                        <input
-                                            type="number"
-                                            name="phone-number"
-                                            id="phone-number"
-                                            className="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="e.g. +(12)3456 789"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="col-span-6 sm:col-span-3">
-                                        <SelectButton
-                                            id="languages"
-                                            label="Order"
-                                            defaultOption="--"
-                                            options={[
-                                                { value: "2", label: "Doctor" },
-                                                { value: "0", label: "User" },
-                                            ]}
-                                        />
-                                    </div>
-                                    <div className="col-span-6 sm:col-span-6">
-                                        <label htmlFor="phone-number" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Avatar</label>
-
-                                        <div className="flex items-center justify-center w-full">
-                                            <label
-                                                htmlFor="dropzone-file"
-                                                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                                            >
-                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                    <svg
-                                                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                                                        aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none"
-                                                        viewBox="0 0 20 16"
-                                                    >
-                                                        <path
-                                                            stroke="currentColor"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth={2}
-                                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                                        />
-                                                    </svg>
-                                                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                                        <span className="font-semibold">Click to upload</span> or drag and drop
-                                                    </p>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                        SVG, PNG, JPG or GIF (MAX. 800x400px)
-                                                    </p>
-                                                </div>
-                                                <input id="dropzone-file" type="file" className="hidden" />
-                                            </label>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Modal footer */}
-                            <div className="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b dark:border-gray-600">
-                                <button
-                                    type="submit"
-                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                >
-                                    Save all
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            <ConfirmDelete
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDelete}
+                title="Confirm Deletion"
+                message="Are you sure you want to delete this package?"
+            />
+            <MembershipPackageModal isOpen={isModalOpen} onClose={() => closeModal()} onSubmitForm={handleCreateMembershipPackage} />
         </div>
     );
 };
