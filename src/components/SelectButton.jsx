@@ -5,10 +5,8 @@ const SelectButton = ({
   label = "Select an option",
   defaultOption = "Choose a country",
   options = [
-    { value: "US", label: "United States" },
-    { value: "CA", label: "Canada" },
-    { value: "FR", label: "France" },
-    { value: "DE", label: "Germany" }
+    { value: "US", label: "Option" },
+    
   ],
   onChange = () => {},
   className = "",

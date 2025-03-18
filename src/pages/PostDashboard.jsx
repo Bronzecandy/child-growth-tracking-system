@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import api from '../utils/api';
 import SelectButton from '../components/SelectButton';
 import Pagination from '../components/Pagination';
-import DefaultAvatar from '../assets/DefaultAvatar.svg';
 import Loading from '../components/Loading';
-const MembershipDashboard = () => {
+const PostDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [membershipPackages, setMembershipPackages] = useState([]);
+    const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(10);
     const [search, setSearch] = useState("");
     const [order, setOrder] = useState("");
+    const [filter, setFilter] = useState("");
     const [sortBy, setSortBy] = useState("");
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -18,10 +18,10 @@ const MembershipDashboard = () => {
     const fetchMembershipPackages = async () => {
         setLoading(true);
         try {
-            const response = await api.get("/membership-packages", {
-                params: { page, size, search, sortBy, order },
+            const response = await api.get("/posts", {
+                params: { page, size, search, sortBy, order,status: filter },
             });
-            setMembershipPackages(response.data.packages);
+            setPosts(response.data.posts);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error("Lỗi khi lấy danh sách users:", error);
@@ -35,7 +35,7 @@ const MembershipDashboard = () => {
         }, 500);
 
         return () => clearTimeout(delay);
-    }, [page, size, search, sortBy, order]);
+    }, [page, size, search, sortBy, order, filter]);
     // Handle Search
     const handleSearchChange = (e) => {
         setSearch(e.target.value);
@@ -59,13 +59,16 @@ const MembershipDashboard = () => {
     };
     const handlePageChange = (page) => {
         setPage(page);
-    }
+    };
     const handleOrderByChange = (value) => {
         setOrder(value);
-    }
+    };
+    const handleFilterChange = (value) => {
+        setFilter(value);
+    };
     const handleSortrByChange = (value) => {
         setSortBy(value);
-    }
+    };
     return (
         <div className="">
             {/* Table header with actions and search */}
@@ -91,7 +94,18 @@ const MembershipDashboard = () => {
                         ]}
                         onChange={handleOrderByChange}
                     />
-
+                     <SelectButton
+                        id="languages"
+                        label="Filter"
+                        defaultOption="--"
+                        options={[
+                            { value: "PENDING", label: "Pending" },
+                            { value: "PUBLISHED", label: "Published" },
+                            { value: "REJECTED", label: "Rejected" },
+                            { value: "DELETED", label: "Deleted" },
+                        ]}
+                        onChange={handleFilterChange}
+                    />
                 </div>
 
                 <div className="relative">
@@ -117,10 +131,9 @@ const MembershipDashboard = () => {
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" className="px-6 py-3">Name</th>
-                            <th scope="col" className="px-6 py-3">Tier</th>
-                            <th scope="col" className="px-6 py-3">Duration</th>
-                            <th scope="col" className="px-6 py-3">Price</th>
+                            <th scope="col" className="px-6 py-3">Title</th>
+                            <th scope="col" className="px-6 py-3">Status</th>
+                            <th scope="col" className="px-6 py-3">View Details</th>
                             <th scope="col" className="px-6 py-3">Is Active</th>
                             <th scope="col" className="px-6 py-3">Action</th>
                         </tr>
@@ -133,26 +146,21 @@ const MembershipDashboard = () => {
                                 </td>
                             </tr>
                         ) : (
-                            membershipPackages.map((membershipPackage) => (
+                            posts.map((post) => (
                                 <tr
-                                    key={membershipPackage._id}
+                                    key={post._id}
                                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
                                 >
                                     
                                     <td className="px-6 py-4">
                                         <div className="ps-3">
-                                            <div className="text-base font-semibold">{membershipPackage.name}</div>
+                                            <div className="text-base font-semibold">{post.title}</div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">{membershipPackage.tier}</td>
+                                    <td className="px-6 py-4">{post.status}</td>
+                                    <td className="px-6 py-4">View Detail</td>
                                     <td className="px-6 py-4">
-                                        {membershipPackage.duration.value} {membershipPackage.duration.unit}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {membershipPackage.price.value} {membershipPackage.price.unit}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {membershipPackage.isDeleted ? (
+                                        {post.isDeleted ? (
                                             <div className="flex items-center">
                                                 <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2" /> Deactive
                                             </div>
@@ -309,4 +317,4 @@ const MembershipDashboard = () => {
     );
 };
 
-export default MembershipDashboard;
+export default PostDashboard;
