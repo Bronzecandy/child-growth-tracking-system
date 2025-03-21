@@ -125,6 +125,8 @@ const MembershipDashboard = () => {
                         defaultOption="--"
                         options={[
                             { value: "date", label: "Date" },
+                            { value: "name", label: "Name" },
+                            { value: "price", label: "Price" },
 
                         ]}
                         onChange={handleSortrByChange}

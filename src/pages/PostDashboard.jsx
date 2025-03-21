@@ -101,6 +101,7 @@ const PostDashboard = () => {
                         defaultOption="--"
                         options={[
                             { value: "date", label: "Date" },
+                            { value: "name", label: "Name" },
 
                         ]}
                         onChange={handleSortrByChange}
