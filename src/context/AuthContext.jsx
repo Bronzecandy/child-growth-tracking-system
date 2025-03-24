@@ -15,13 +15,9 @@ export const AuthProvider = ({ children }) => {
         const { data } = await api.get("/auth/me");
         setUser(data.user);
       } catch (error) {
-        if (error.response?.status === 401) {
-          console.log("Access token hết hạn, thử refresh token...");
-          await refreshAccessToken();
-        } 
-        else if (error.response?.status === 403) {
-           await logout();
-         }
+        if (error.shouldLogout) {
+          await logout();
+        }
       } finally {
         setLoading(false);
       }
@@ -30,52 +26,43 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  // Gửi yêu cầu làm mới token
-  const refreshAccessToken = async () => {
-    try {
-      await api.post("/auth/renew-access-token");
-      const { data } = await api.get("/auth/me"); // Gọi lại /auth/me với token mới
-      setUser(data.user);
-    } catch (error) {
-      console.error("Lỗi refresh token:", error);
-      //logout();
-    }
-  };
-
   const login = async (email, password) => {
     try {
       const res = await api.post("/auth/login", { email, password });
       const { data } = await api.get("/auth/me");
       setUser(data.user);
-      if (data.user.role === 1) {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
-      }
+      navigate(data.user.role === 1 ? "/dashboard" : "/");
       return res.data;
     } catch (error) {
-      console.error("Lỗi đăng nhập:", error);
+      if (error.shouldLogout) {
+        await logout();
+      }
       throw error;
     }
   };
+
   const register = async (name, email, password) => {
     try {
       const res = await api.post("/auth/signup", { name, email, password });
       return res.data;
     } catch (error) {
-      console.error("Lỗi đăng ký:", error);
       throw error;
     }
   };
 
   const logout = async () => {
-    await api.post("/auth/logout");
-    setUser(null);
-    navigate('/login')
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
+      navigate('/login');
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

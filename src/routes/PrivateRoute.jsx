@@ -5,7 +5,6 @@ import Loading from "../components/Loading";
 import DashboardLayout from "../layouts/DashboardLayout";
 const PrivateRoute = ({ element }) => {
   const { user, loading } = useContext(AuthContext);
-
   if (loading) {
     return <Loading></Loading>;
   }
