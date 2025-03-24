@@ -1,8 +1,7 @@
 import React from "react";
 
-function ConfirmDelete({ isOpen, onClose, onConfirm, title, message, type = "delete" }) {
+function ConfirmDelete({ isOpen, onClose, onConfirm, title, message, type }) {
   if (!isOpen) return null;
-
   // Định nghĩa màu sắc dựa trên type
   const buttonColors = {
     delete: "bg-red-600 hover:bg-red-800 focus:ring-red-300 dark:focus:ring-red-800",
