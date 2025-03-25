@@ -21,9 +21,8 @@ const AppRoutes = () => {
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
       {/* Public Routes */}
-      <Route path="/login" element={<PublicRoute element={<Login />} />} />
-      <Route path="/register" element={<PublicRoute element={<Register />} />} />
-
+      <Route path="/login" element={<Login />} />
+     
       {/* Private Routes */}
       <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
       <Route path="/dashboard/users" element={<PrivateRoute element={<User />} />} />

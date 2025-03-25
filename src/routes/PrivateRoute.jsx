@@ -17,7 +17,7 @@ const PrivateRoute = ({ element }) => {
     return <DashboardLayout>{element}</DashboardLayout>;
   }
 
-  return <Navigate to="/" replace />;
+  return <Navigate to="/you-are-not-allow" replace />;
 };
 
 export default PrivateRoute;
