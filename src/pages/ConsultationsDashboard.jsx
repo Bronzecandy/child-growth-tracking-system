@@ -136,7 +136,6 @@ function ConsultationsDashboard() {
                             <th scope="col" className="px-6 py-3">Doctor</th>
                             <th scope="col" className="px-6 py-3">Rating</th>
                             <th scope="col" className="px-6 py-3">Status</th>
-                            <th scope="col" className="px-6 py-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
