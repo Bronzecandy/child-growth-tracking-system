@@ -136,12 +136,12 @@ const UserModal = ({ isModalOpen, closeModal, onSubmit, initialData = {} }) => {
                                     id="languages"
                                     label="Order"
                                     defaultOption={
-                                        initialData.role === "0"
+                                        initialData.role === 0
                                             ?  "User" 
                                             : "Doctor" 
                                     }
                                     options={
-                                        initialData.role === "0"
+                                        initialData.role === 0
                                             ? [{ value: "2", label: "Doctor" }]
                                             : [{ value: "0", label: "User" }]
                                     }
