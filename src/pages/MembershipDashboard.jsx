@@ -168,7 +168,6 @@ const MembershipDashboard = () => {
                         <tr>
                             <th scope="col" className="px-6 py-3">Name</th>
                             <th scope="col" className="px-6 py-3">Post Limit</th>
-                            <th scope="col" className="px-6 py-3">Chart Limit</th>
                             <th scope="col" className="px-6 py-3">Child Limit</th>
                             <th scope="col" className="px-6 py-3">Duration</th>
                             <th scope="col" className="px-6 py-3">Price</th>
@@ -196,7 +195,6 @@ const MembershipDashboard = () => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">{membershipPackage.postLimit}</td>
-                                    <td className="px-6 py-4">{membershipPackage.downloadChart}</td>
                                     <td className="px-6 py-4">{membershipPackage.updateChildDataLimit}</td>
                                     <td className="px-6 py-4">
                                         {membershipPackage.duration.value} {membershipPackage.duration.unit}

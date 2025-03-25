@@ -53,13 +53,15 @@ function RequestDashboard() {
 
     const handleStatusChange = async (id, status) => {
         try {
+            setIsDeleteModalOpen(false);
+            setLoading(true)
             await api.put(`/requests/status/${id}`, { status });
             toast.success(`Request ${status} successfully!`);
         } catch (error) {
             toast.error(`Failed to update request: ${error.response?.data?.message || error.message}`);
         } finally {
             fetchRequests();
-            setIsDeleteModalOpen(false);
+            setLoading(false)
         }
     };
 
@@ -229,7 +231,7 @@ function RequestDashboard() {
                                         </button>
                                         <button
                                             className="font-medium"
-                                            onClick={() => openConfirmModal(request._id, "AdminApprove")}
+                                            onClick={() => openConfirmModal(request._id, "Accepted")}
                                         >
                                             <svg className="w-6 h-6 text-green-500 dark:text-green-500 hover:text-green-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 11.917 9.724 16.5 19 7.5" />
@@ -264,7 +266,7 @@ function RequestDashboard() {
                 onConfirm={deleteAction}
                 title={`Confirm ${selectedRequestId}`}
                 message={`Are you sure you want to ${selectedRequestId} this request?`}
-                type={selectedRequestId === "AdminApprove" ? "confirm" : "delete"}
+                type={selectedRequestId === "Accepted" ? "confirm" : "delete"}
             />
 
         </div>
