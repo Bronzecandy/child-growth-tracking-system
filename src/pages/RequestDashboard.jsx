@@ -112,7 +112,6 @@ function RequestDashboard() {
                             { value: "Pending", label: "Pending" },
                             { value: "Canceled", label: "Canceled" },
                             { value: "Accepted", label: "Accepted" },
-                            { value: "AdminApprove", label: "Admin Approve" },
                             { value: "Rejected", label: "Rejected" },
                         ]}
                         onChange={handleFilterChange}
@@ -209,11 +208,6 @@ function RequestDashboard() {
                                             {request.status === "Accepted" && (
                                                 <>
                                                     <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2" /> Accepted
-                                                </>
-                                            )}
-                                            {request.status === "AdminApprove" && (
-                                                <>
-                                                    <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2" /> Admin Approve
                                                 </>
                                             )}
                                             {request.status === "Rejected" && (

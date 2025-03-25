@@ -162,12 +162,12 @@ function ConsultationsDashboard() {
                                         <div className="flex items-center">
                                             {consultation.status === "Ongoing" && (
                                                 <>
-                                                    <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2" /> Ended
+                                                    <div className="h-2.5 w-2.5 rounded-full bg-red-500  me-2" /> Ended
                                                 </>
                                             )}
                                             {consultation.status === "Ended" && (
                                                 <>
-                                                    <div className="h-2.5 w-2.5 rounded-full bg-red-500 me-2" /> Ongoing
+                                                    <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2" /> Ongoing
                                                 </>
                                             )}
 
