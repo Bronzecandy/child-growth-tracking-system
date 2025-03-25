@@ -7,6 +7,7 @@ import api from "../utils/api";
 function Dashboard() {
   const [dailyRevenue, setDailyRevenue] = useState(null);
   const [newUsers, setNewUsers] = useState(null);
+  const [yearlyRevenue, setYearlyRevenue] = useState(null);
 
   useEffect(() => {
     // Lấy doanh thu trong ngày
@@ -19,6 +20,19 @@ function Dashboard() {
         setDailyRevenue(totalRevenue);
       } catch (error) {
         console.error("Error fetching daily revenue:", error);
+      }
+    };
+
+    // Lấy doanh thu trong năm
+    const fetchYearRevenue = async () => {
+      try {
+        const response = await api.get("/statistics/revenue", {
+          params: { time: "YEAR", unit: "VND" },
+        });
+        const totalRevenue = response.data.Revenue.reduce((acc, cur) => acc + cur.Revenue, 0);
+        setYearlyRevenue(totalRevenue);
+      } catch (error) {
+        console.error("Error fetching yearly revenue:", error);
       }
     };
 
@@ -36,6 +50,7 @@ function Dashboard() {
     };
 
     fetchDailyRevenue();
+    fetchYearRevenue();
     fetchNewUsers();
   }, []);
 
@@ -54,16 +69,19 @@ function Dashboard() {
               {dailyRevenue !== null ? dailyRevenue.toLocaleString("vi-VN") : "..."}
             </p>
           </div>
+          {/* Revenue trong năm */}
+          <div className="p-4 border-2 border-gray-200 rounded-lg flex-1 flex flex-col items-center justify-center">
+            <h2 className="text-lg font-semibold text-gray-700">This Year Revenue (VND)</h2>
+            <p className="text-2xl font-bold text-purple-600">
+              {yearlyRevenue !== null ? yearlyRevenue.toLocaleString("vi-VN") : "..."}
+            </p>
+          </div>
           {/* New User trong ngày */}
           <div className="p-4 border-2 border-gray-200 rounded-lg flex-1 flex flex-col items-center justify-center">
             <h2 className="text-lg font-semibold text-gray-700">New Users</h2>
             <p className="text-2xl font-bold text-blue-600">
               {newUsers !== null ? newUsers : "..."}
             </p>
-          </div>
-          {/* Giữ nguyên phần 3/3 */}
-          <div className="p-4 border-2 border-gray-200 rounded-lg flex-1 flex items-center justify-center">
-            3/3
           </div>
         </div>
       </div>
