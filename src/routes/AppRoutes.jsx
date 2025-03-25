@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 
@@ -13,23 +13,26 @@ import MembershipDashboard from "../pages/MembershipDashboard";
 import PostDashboard from "../pages/PostDashboard";
 import RequestDashboard from "../pages/RequestDashboard";
 import ConsultationsDashboard from "../pages/ConsultationsDashboard";
+
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Redirect từ trang chủ "/" đến Dashboard */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
       {/* Public Routes */}
       <Route path="/login" element={<PublicRoute element={<Login />} />} />
       <Route path="/register" element={<PublicRoute element={<Register />} />} />
 
       {/* Private Routes */}
       <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
-
       <Route path="/dashboard/users" element={<PrivateRoute element={<User />} />} />
       <Route path="/dashboard/membership-packages" element={<PrivateRoute element={<MembershipDashboard />} />} />
       <Route path="/dashboard/posts" element={<PrivateRoute element={<PostDashboard />} />} />
       <Route path="/dashboard/requests" element={<PrivateRoute element={<RequestDashboard />} />} />
       <Route path="/dashboard/consultations" element={<PrivateRoute element={<ConsultationsDashboard />} />} />
-      {/* Free Routes (Ai cũng xem được) */}
-      <Route path="/" element={<Home />} />
+
+      {/* 404 Page */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
